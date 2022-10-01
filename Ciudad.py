@@ -34,7 +34,8 @@ def prestamista(dinero, opciones, prestamos):
     valores_correctos(1, 5, eleccion)
     if eleccion == 1:
         if len(prestamos) > 3:
-            print("Ya tienes 3 prestamos en proceso de ser liquidados, mejor esperamos más antes de pedir el siguiente.")
+            print("Ya tienes 3 prestamos en proceso de ser liquidados,"
+                  " mejor esperamos más antes de pedir el siguiente.")
             return "muchos prestamos"
         else:
             imprimir_prestamos(opciones)
@@ -49,7 +50,8 @@ def prestamista(dinero, opciones, prestamos):
                 return prestamo_pedido
     elif eleccion == 2:
         if len(prestamos) > 3:
-            print("Ya tienes 3 prestamos en proceso de ser liquidados, mejor esperamos más antes de pedir el siguiente.")
+            print("Ya tienes 3 prestamos en proceso de ser liquidados,"
+                  " mejor esperamos más antes de pedir el siguiente.")
             return "muchos prestamos"
         else:
             imprimir_prestamos(opciones)
@@ -150,7 +152,7 @@ def prestamista_paso_final(dinero, prestamos):
         prestamos.append(accion_prestamista)
         dinero -= accion_prestamista[0]
         return prestamos, dinero
-    # -------------------------------------------ACABA PRESTAMISTA --------------------------------------------------------
+# -------------------------------------------ACABA PRESTAMISTA --------------------------------------------------------
 
 # -------------------------------------------ASTILLERO-----------------------------------------------------------------
 def creacion_barcos(dinero):
@@ -160,7 +162,8 @@ def creacion_barcos(dinero):
         if dinero >= 25000:
             dinero -= 25000
             print("Tu nuevo barco está en construcción, tardará 5 turnos."
-                  "\nRecuerda que el nuevo barco tendrá la misma salud que tu flota actual, intenta reparar tus barcos.")
+                  "\nRecuerda que el nuevo barco tendrá la misma salud que tu flota actual,"
+                  " intenta reparar tus barcos.")
             return dinero, True
         else:
             print("\nNo te puedes permitir el barco.")
