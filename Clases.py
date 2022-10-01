@@ -45,17 +45,6 @@ class Ciudad:
         Vino: {}
         """.format(self.nombre, self.telas, self.cerveza, self.herramientas, self.pieles, self.vino))
 
-    def eleccion_compra(self):
-        print("""Los precios actuales de {} son:
-        1- Telas: {}
-        2- Cerveza: {}
-        3- Herramientas: {}
-        4- Pieles: {}
-        5- Vino: {}
-        """.format(self.nombre, self.telas, self.cerveza, self.herramientas, self.pieles, self.vino))
-        eleccion = int(input())
-        eleccion = valores_correctos(1, 5, eleccion)
-
 
 
 # Pequeña función que comprueba si el valor introducido es correcto, eliminando los bucles en las otras funciones.

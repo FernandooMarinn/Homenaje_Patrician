@@ -151,7 +151,7 @@ def reparacion_barco(salud, dinero):
     return salud, dinero
 
 def astillero(salud, dinero, nombre):
-    eleccion = int(input("\nBienvenido al astillero {}. ¿Qué deseas hacer?\n1- Reparar flota."
+    eleccion = int(input("\nBienvenido al astillero, {}. ¿Qué deseas hacer?\n1- Reparar flota."
                          "\n2- Construir barco.\n3- Salir.".format(nombre)))
     if eleccion == 3:
         print("De acuerdo, hasta la proxima")
