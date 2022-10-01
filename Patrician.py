@@ -1,43 +1,15 @@
-# Importamos random para producir precios de manera aleatoria y tiempo para la cuenta atrás entre ciudades.
+# Importamos los archivos de ciudad y de clases.
 from Ciudad import *
 from Clases import *
-
-# Se definen la clase ciudad, con productos y sus correspondientes precios.
-
-# ----------------------------------------------CIUDADES---------------------------------------------------------------
-
-
-# Se definen las ciudades y se inicializan sus precios.
-# Lubeck produce algo de vino, y herramientas.
-Lubeck = Ciudad(1400, 1000, 450, 250, 70, 45, 290, 200, 420, 300, "Lubeck")
-# Stettin produce cerveza.
-Stettin = Ciudad(1400, 1000, 450, 250, 42, 32, 400, 280, 420, 300, "Stettin")
-# Malmo produce telas y pieles.
-Malmo = Ciudad(1100, 700, 450, 250, 70, 45, 400, 280, 300, 200, "Malmo")
-# Rostock compra de todo.
-Rostock = Ciudad(1400, 1000, 450, 250, 70, 45, 400, 280, 420, 300, "Rostock")
-
-
-# Podemmos comprobar en todo momento el dinero y el inventario del que disponemos.
-def comprobar_dinero(dinero, inventario, barcos):
-    print("Tienes {} monedas.\n\n"
-          "Tu inventario consta de:\n"
-          "Cerveza: {}\n"
-          "Telas: {}\n"
-          "Herramientas: {}\n"
-          "Pieles: {}\n"
-          "Vino: {}\n\n"
-          "Tienes {} barco(s) en tu convoy.\n"
-          .format(dinero, inventario[0], inventario[1], inventario[2], inventario[3], inventario[4], barcos[0]))
-
+from Funcionalidades import *
 
 # Preguntamos el nombre de jugador, el inventario a 0 y el dinero inicial.
 def jugador():
     datos_jugador = [input("¿Cual es tu nombre?\n"), 0, [0, 0, 0, 0, 0]]
-    dinero_jugador = int(input("¿Con cuanto dinero quieres empezar?\n"
+    dinero_jugador = input("¿Con cuanto dinero quieres empezar?\n"
                                "\n1- 1000 monedas (muy poco)\n2- 5000 monedas (poco)"
                                "\n3- 15000 monedas (normal)\n4- 30000 monedas (mucho)"
-                               "\n5- 50000 monedas (muchísimo)\n"))
+                               "\n5- 50000 monedas (muchísimo)\n")
     dinero_jugador = valores_correctos(1, 5, dinero_jugador)
     if dinero_jugador == 1:
         datos_jugador[1] = 1000
@@ -69,22 +41,15 @@ def ciudad_inicial():
     print("\n")
     for i in range(len(ciudades)):
         print("{}- {}.".format(i + 1, ciudades[i]))
-    pregunta = int(input("¿Cual quieres que sea tu ciudad de inicio?\n"))
+    pregunta = input("¿Cual quieres que sea tu ciudad de inicio?\n")
     pregunta = valores_correctos(1, 4, pregunta)
     return ciudades[pregunta - 1]
-
-
-def turno(turno):
-    turno += 1
-    return turno
-
-
 # ----------------------------------------------------------------------------------------------------------------------
 def opciones_comercio(dinero, espacio):
-    opcion = int(input("¿Que quieres hacer?\n"
+    opcion = input("¿Que quieres hacer?\n"
                        "1- Comprar.\n"
                        "2- Vender.\n"
-                       "3- Salir.\n"))
+                       "3- Salir.\n")
     opcion = valores_correctos(1, 3, opcion)
     return opcion
 
@@ -98,7 +63,7 @@ def juego(jugador, ciudad_inicio):
     # Empezamos guardando los datos.
     stop = False
     turno = 0
-    salud_barcos = 100
+    salud_barcos = 90
     numero_barcos = [1, 0, 0]
     espacio_barcos = 300 * numero_barcos[0]
     prestamos = []
@@ -127,6 +92,7 @@ def juego(jugador, ciudad_inicio):
         while not stop:
             eleccion = opciones_ciudad(ciudad)
             eleccion = valores_correctos(1, 5, eleccion)
+            # Si elegimos el comercio.
             if eleccion == 1:
                 # Comprobamos en que ciudad estamos, mostramos los precios y preguntamos las opciones de comercio.
                 ciudad_actual = en_que_ciudad_estoy(ciudad)
@@ -161,7 +127,7 @@ def juego(jugador, ciudad_inicio):
                     prestamos = prestamos_procesados[0]
                     dinero = prestamos_procesados[1]
             elif eleccion == 4:
-                comprobar_dinero(dinero, inventario, numero_barcos)
+                comprobar_dinero(dinero, inventario, numero_barcos, turno, prestamos)
                 continue
             # Aquí se termina el turno.
             elif eleccion == 5:

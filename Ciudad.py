@@ -1,5 +1,5 @@
 import random
-from Clases import valores_correctos
+from Funcionalidades import valores_correctos
 from time import sleep
 # A partir de aqui se definen las funciones de la ciudad:
 #---------------------------------------------PRESTAMISTA--------------------------------------------------------------
@@ -29,8 +29,8 @@ def imprimir_prestamos(opciones):
 
 
 def prestamista(dinero, opciones, prestamos):
-    eleccion = int(input("Bienvenido al prestamista, ¿Qué quieres hacer?\n1- Pedir prestamo   2- Conceder prestamo"
-                         "   3- Comprobar prestamos   4- Devolver prestamo   5- Salir."))
+    eleccion = input("Bienvenido al prestamista, ¿Qué quieres hacer?\n1- Pedir prestamo   2- Conceder prestamo"
+                         "   3- Comprobar prestamos   4- Devolver prestamo   5- Salir.\n")
     valores_correctos(1, 5, eleccion)
     if eleccion == 1:
         if len(prestamos) > 3:
@@ -39,7 +39,7 @@ def prestamista(dinero, opciones, prestamos):
             return "muchos prestamos"
         else:
             imprimir_prestamos(opciones)
-            opcion = int(input())
+            opcion = input()
             opcion = valores_correctos(1, 4, opcion)
             if opcion == 4:
                 print("De acuerdo, hasta la proxima")
@@ -47,6 +47,8 @@ def prestamista(dinero, opciones, prestamos):
             else:
                 prestamo_pedido = opciones[opcion - 1]
                 prestamo_pedido.append("solicitado")
+                print("Enhorabuena, acabas de solicitar un prestamo. Ten en cuenta que se te cobrará en {} turnos"
+                      .format(prestamo_pedido[2]))
                 return prestamo_pedido
     elif eleccion == 2:
         if len(prestamos) > 3:
@@ -55,7 +57,7 @@ def prestamista(dinero, opciones, prestamos):
             return "muchos prestamos"
         else:
             imprimir_prestamos(opciones)
-            opcion = int(input())
+            opcion = input()
             valores_correctos(1, 4, opcion)
             posibles_prestamos = opciones[opcion]
             if opcion == 4:
@@ -65,6 +67,8 @@ def prestamista(dinero, opciones, prestamos):
                 if dinero > posibles_prestamos[0]:
                     prestamo_concedido = opciones[opcion - 1]
                     prestamo_concedido.append("concedido")
+                    print("Enhorabuena, acabas de conceder un prestamo. Te será devuelto en {} turnos"
+                          .format(prestamo_concedido[2]))
                     return prestamo_concedido
                 else:
                     print("No tienes suficiente dinero para prestar esa cantidad.")
@@ -79,8 +83,9 @@ def prestamista(dinero, opciones, prestamos):
             # Solo se comprueban los solicitados, los concedidos se devuelven automaticamente.
             if prestamo[4] == "solicitado":
                 numero_prestamos += 1
-                print("{}- {} monedas.".format(numero_prestamos, prestamo[3]))
-                devolver = int(input("¿Quieres devolver este prestamo?\n1- Si.\n2- No.\n"))
+                print("Se van a mostrar todos los prestamos que has solicitado, elije el que quieres pagar:")
+                print("\n{}- {} monedas.".format(numero_prestamos, prestamo[3]))
+                devolver = input("¿Quieres devolver este prestamo?\n1- Si.\n2- No.\n")
                 devolver = valores_correctos(1, 2, devolver)
                 # Se va iterando por todos los prestamos solicitados.
                 if devolver == 2:
@@ -99,7 +104,7 @@ def prestamista(dinero, opciones, prestamos):
 def comprobador_prestamos(prestamos):
     # Si no hay prestamos, devolvemos False
     if len(prestamos) < 1:
-        print("\nNo tienes ningún prestamo. Vive una vida alejado de las deudas.")
+        print("\nNo tienes ningún prestamo. Vive una vida alejado de las deudas.\n")
     else:
         numero_prestamo = 1
         for i in prestamos:
@@ -157,7 +162,8 @@ def prestamista_paso_final(dinero, prestamos):
 # -------------------------------------------ASTILLERO-----------------------------------------------------------------
 def creacion_barcos(dinero):
     print("\n¿Quieres crear un nuevo barco para tu flota?\n1- Si 25000 monedas.\n2- No, salir.")
-    eleccion = int(input())
+    eleccion = input()
+    eleccion = valores_correctos(1, 2, eleccion)
     if eleccion == 1:
         if dinero >= 25000:
             dinero -= 25000
@@ -174,13 +180,14 @@ def creacion_barcos(dinero):
 def reparacion_barco(salud, dinero):
     print("La salud de tu barco es de {}%".format(salud))
     precio_reparacion = (100 - salud) * 500
-    opciones = int(input("¿Que quieres hacer?\n"
-                         "0- Reparar ({} monedas).\n"
-                         "1- Salir.\n".format(precio_reparacion)))
+    opciones = input("¿Que quieres hacer?\n"
+                         "1- Reparar ({} monedas).\n"
+                         "2- Salir.\n".format(precio_reparacion))
+    opciones = valores_correctos(1, 2, opciones)
 
-    if opciones == 1:
+    if opciones == 2:
         print("¡Hasta la vista!")
-    elif opciones == 0:
+    elif opciones == 1:
         if dinero >= precio_reparacion:
             dinero -= precio_reparacion
             print("¡Manos a la obra!")
@@ -191,8 +198,6 @@ def reparacion_barco(salud, dinero):
             print("\nTu barco está como nuevo, ya puedes salir a navegar otra vez.")
         else:
             print("No te puedes permitir la reparación.")
-    else:
-        print("No has elegido una opcion correcta.")
 
     return salud, dinero
 
@@ -222,8 +227,8 @@ def comprobacion_barcos(numero_barcos):
 # -------------------------------------------EMPIEZA CIUDAD ----------------------------------------------------------
 def opciones_ciudad(ciudad):
     print("Acabas de llegar a {}.\n".format(ciudad))
-    opcion = int(input("¿Qué quieres hacer?\n\n1- Comerciar con la ciudad.\n2- Ir al astillero.\n3- Ir al prestamista.\n"
-                       "4- Comprobar dinero e inventario.\n5- Acabar el turno.\n"))
+    opcion = input("¿Qué quieres hacer?\n\n1- Comerciar con la ciudad.\n2- Ir al astillero.\n3- Ir al prestamista.\n"
+                       "4- Comprobar dinero e inventario.\n5- Acabar el turno.\n")
     opcion = valores_correctos(1, 5, opcion)
     return opcion
 

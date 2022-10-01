@@ -47,12 +47,13 @@ class Ciudad:
 
 
 
-# Pequeña función que comprueba si el valor introducido es correcto, eliminando los bucles en las otras funciones.
-def valores_correctos(inicio, final, numero_a_comprobar):
-    if inicio <= numero_a_comprobar <= final:
-        return numero_a_comprobar
-    else:
-        while not inicio <= numero_a_comprobar <= final:
-            print("Has introducido un valor incorrecto, tus opciones son del {} al {}.".format(inicio, final))
-            numero_a_comprobar = int(input())
-        return numero_a_comprobar
+
+# Se definen las ciudades y se inicializan sus precios.
+# Lubeck produce algo de vino, y herramientas.
+Lubeck = Ciudad(1400, 1000, 450, 250, 70, 45, 290, 200, 420, 300, "Lubeck")
+# Stettin produce cerveza.
+Stettin = Ciudad(1400, 1000, 450, 250, 42, 32, 400, 280, 420, 300, "Stettin")
+# Malmo produce telas y pieles.
+Malmo = Ciudad(1100, 700, 450, 250, 70, 45, 400, 280, 300, 200, "Malmo")
+# Rostock compra de todo.
+Rostock = Ciudad(1400, 1000, 450, 250, 70, 45, 400, 280, 420, 300, "Rostock")
