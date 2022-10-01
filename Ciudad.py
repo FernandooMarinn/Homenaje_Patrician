@@ -106,8 +106,51 @@ def comprobador_prestamos(prestamos):
                   .format(numero_prestamo, i[4], i[0], i[1], i[2], i[3]))
             numero_prestamo += 1
 
+def liquidacion_prestamos(prestamos, dinero):
+    # Aqui tenemos que tener en cuenta los prestamos, y cuando pasan los turnos:
+    for prestamo in prestamos:
+        # Cada turno se disminuye en 1 los turnos que faltan para devolver el prestamo.
+        prestamo[2] -= 1
+        # Si los turnos acaban:
+        if prestamo[2] < 1:
+            # Si el prestamo estaba solicitado, se devuelve el dinero.
+            if prestamo[4] == "solicitado":
+                print("Ha llegado el momento de pagar tu prestamo. Se te descuentan {} monedas.".format(prestamo[3]))
+                dinero -= prestamo[3]
+                prestamos.remove(prestamo)
+            # En cambio, si lo habiamos concedido nos devuelven a nosotros.
+            elif prestamo[4] == "concedido":
+                print("Ha llegado el momento de que te devuelvan el prestamo que concediste. Ingresas {} monedas."
+                      .format(prestamo[3]))
+                dinero += prestamo[3]
+                prestamos.remove(prestamo)
+    return prestamos, dinero
 
-# -------------------------------------------ACABA PRESTAMISTA --------------------------------------------------------
+def prestamista_paso_final(dinero, prestamos):
+    accion_prestamista = prestamista(dinero, generar_prestamos(), prestamos)
+    if accion_prestamista == "no money" or accion_prestamista == "muchos prestamos" \
+            or accion_prestamista == None:
+        return "continuar"
+    # Este es un prestamo que devolvemos antes de tiempo.
+    elif accion_prestamista[0] == True:
+        dinero -= accion_prestamista[1]
+        print("Has devuelto un total de {} monedas. El prestamo se elimina."
+              .format(accion_prestamista[1]))
+        for i in prestamos:
+            if i[3] == accion_prestamista[1]:
+                prestamos.remove(i)
+        return prestamos, dinero
+    # Este es un prestamo que se ha solicitado (nos dan dinero)
+    elif accion_prestamista[4] == "solicitado":
+        prestamos.append(accion_prestamista)
+        dinero += accion_prestamista[0]
+        return prestamos, dinero
+    # Este es un prestamo que hemos concecido (prestamos dinero)
+    elif accion_prestamista[4] == "concedido":
+        prestamos.append(accion_prestamista)
+        dinero -= accion_prestamista[0]
+        return prestamos, dinero
+    # -------------------------------------------ACABA PRESTAMISTA --------------------------------------------------------
 
 # -------------------------------------------ASTILLERO-----------------------------------------------------------------
 def creacion_barcos(dinero):
@@ -162,6 +205,15 @@ def astillero(salud, dinero, nombre):
         reparar_flota = reparacion_barco(salud, dinero)
         return reparar_flota
 
+def comprobacion_barcos(numero_barcos):
+    if numero_barcos[1] > 0:
+        numero_barcos[2] += 1
+    if numero_barcos[2] == 5:
+        numero_barcos[0] += 1
+        numero_barcos[2] = 0
+        numero_barcos[1] -= 1
+        print("Se ha añadido un nuevo barco a tu flota. ¡Enhorabuena!")
+    return numero_barcos
 
 # -------------------------------------------ACABA ASTILLERO ----------------------------------------------------------
 # -------------------------------------------EMPIEZA CIUDAD ----------------------------------------------------------

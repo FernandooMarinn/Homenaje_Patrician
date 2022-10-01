@@ -82,10 +82,10 @@ def turno(turno):
 # ----------------------------------------------------------------------------------------------------------------------
 def opciones_comercio(dinero, espacio):
     opcion = int(input("¿Que quieres hacer?\n"
-                       "0- Comprar.\n"
-                       "1- Vender.\n"
-                       "2- Salir.\n"))
-
+                       "1- Comprar.\n"
+                       "2- Vender.\n"
+                       "3- Salir.\n"))
+    opcion = valores_correctos(1, 3, opcion)
     return opcion
 
 
@@ -115,31 +115,12 @@ def juego(jugador, ciudad_inicio):
         turno += 1
         dinero -= factura(dinero)
         print("Se avanza un turno, ahora vas por el turno {}.\n".format(turno))
-        # Aqui tenemos que tener en cuenta los prestamos, y cuando pasan los turnos:
-        for prestamo in prestamos:
-            # Cada turno se disminuye en 1 los turnos que faltan para devolver el prestamo.
-            prestamo[2] -= 1
-            # Si los turnos acaban:
-            if prestamo[2] < 1:
-                # Si el prestamo estaba solicitado, se devuelve el dinero.
-                if prestamo[4] == "solicitado":
-                    print("Ha llegado el momento de pagar tu prestamo. Se te descuentan {} monedas.".format(prestamo[3]))
-                    dinero -= prestamo[3]
-                    prestamos.remove(prestamo)
-                # En cambio, si lo habiamos concedido nos devuelven a nosotros.
-                elif prestamo[4] == "concedido":
-                    print("Ha llegado el momento de que te devuelvan el prestamo que concediste. Ingresas {} monedas."
-                          .format(prestamo[3]))
-                    dinero += prestamo[3]
-                    prestamos.remove(prestamo)
+        #Aqui se tienen en cuenta los prestamos
+        evolucion_prestamos = liquidacion_prestamos(prestamos, dinero)
+        prestamos = evolucion_prestamos[0]
+        dinero = evolucion_prestamos[1]
         # Aqui tenemos en cuenta la creación de barcos, y cuando pasan los turnos:
-        if numero_barcos[1] > 0:
-            numero_barcos[2] += 1
-        if numero_barcos[2] == 5:
-            numero_barcos[0] += 1
-            numero_barcos[2] = 0
-            numero_barcos[1] -= 1
-            print("Se ha añadido un nuevo barco a tu flota. ¡Enhorabuena!")
+        numero_barcos = comprobacion_barcos(numero_barcos)
         print("*" * 50)
         # Preguntamos que queremos hacer en esta ciudad.
         # Bucle para no pasar de turno automáticamente.
@@ -173,37 +154,24 @@ def juego(jugador, ciudad_inicio):
                     continue
             # Esto es el prestamista.
             elif eleccion == 3:
-                accion_prestamista = prestamista(dinero, generar_prestamos(), prestamos)
-                if accion_prestamista == "no money" or accion_prestamista == "muchos prestamos"\
-                or accion_prestamista == None:
+                prestamos_procesados = prestamista_paso_final(dinero, prestamos)
+                if prestamos_procesados == "continuar":
                     continue
-                # Este es un prestamo que devolvemos antes de tiempo.
-                elif accion_prestamista[0] == True:
-                    dinero -= accion_prestamista[1]
-                    print("Has devuelto un total de {} monedas. El prestamo se elimina."
-                          .format(accion_prestamista[1]))
-                    for i in prestamos:
-                        if i[3] == accion_prestamista[1]:
-                            prestamos.remove(i)
-                # Este es un prestamo que se ha solicitado (nos dan dinero)
-                elif accion_prestamista[4] == "solicitado":
-                    prestamos.append(accion_prestamista)
-                    dinero += accion_prestamista[0]
-                # Este es un prestamo que hemos concecido (prestamos dinero)
-                elif accion_prestamista[4] == "concedido":
-                    prestamos.append(accion_prestamista)
-                    dinero -= accion_prestamista[0]
+                else:
+                    prestamos = prestamos_procesados[0]
+                    dinero = prestamos_procesados[1]
             elif eleccion == 4:
                 comprobar_dinero(dinero, inventario, numero_barcos)
                 continue
+            # Aquí se termina el turno.
             elif eleccion == 5:
                 print("{} ha dejado pasar un turno.\n\n".format(nombre))
                 break
 
 
-# Funcion principal.
+# Función principal.
 def main():
-    print("Bienvenido a el gran patrician 3.")
+    print("Bienvenido a este homenaje al juego Patrician III. Creado por FernandooMarinn (GitHub)")
     juego(jugador(), ciudad_inicial())
 
 
