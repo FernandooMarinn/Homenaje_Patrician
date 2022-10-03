@@ -38,11 +38,11 @@ class Ciudad:
 
     def mostrar_precios(self):
         print("""Los precios actuales de {} son:
-        Telas: {}
-        Cerveza: {}
-        Herramientas: {}
-        Pieles: {}
-        Vino: {}
+        1- Telas: {}
+        2- Cerveza: {}
+        3- Herramientas: {}
+        4- Pieles: {}
+        5- Vino: {}
         """.format(self.nombre, self.telas, self.cerveza, self.herramientas, self.pieles, self.vino))
 
 

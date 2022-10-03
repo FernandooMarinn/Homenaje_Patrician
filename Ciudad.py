@@ -1,16 +1,21 @@
-import random
 from Funcionalidades import valores_correctos
 from time import sleep
+from Clases import *
+
+
 # A partir de aqui se definen las funciones de la ciudad:
-#---------------------------------------------PRESTAMISTA--------------------------------------------------------------
+# --------------------------------------------PRESTAMISTA--------------------------------------------------------------
+
+
 def generar_prestamos():
     opciones = []
     for i in range(4):
         opcion = [random.randint(5000, 20000), random.randint(20, 50), random.randint(4, 15)]
-        opcion.append(round(opcion[0] + (opcion[0] * opcion[1]) / 100))
+        opcion.append(round(opcion[0] + ((opcion[0] * opcion[1]) / 100)))
         opciones.append(opcion)
 
     return opciones
+
 
 def imprimir_prestamos(opciones):
     opcion_1 = opciones[0]
@@ -21,19 +26,19 @@ def imprimir_prestamos(opciones):
           "2- {} a un interés de {}%, a devolver en {} turnos. Se devuelven {} monedas.\n"
           "3- {} a un interés de {}%, a devolver en {} turnos. Se devuelven {} monedas.\n"
           "4- Salir".format(opcion_1[0], opcion_1[1], opcion_1[2],
-                            opcion_1[0] + opcion_1[3],
-                            opcion_2[0],  opcion_2[1],  opcion_2[2],
-                            opcion_2[0] + opcion_2[3],
+                            opcion_1[3],
+                            opcion_2[0], opcion_2[1], opcion_2[2],
+                            opcion_2[3],
                             opcion_3[0], opcion_3[1], opcion_3[2],
-                            opcion_3[0] + opcion_3[3]))
+                            opcion_3[3]))
 
 
 def prestamista(dinero, opciones, prestamos):
     eleccion = input("Bienvenido al prestamista, ¿Qué quieres hacer?\n1- Pedir prestamo   2- Conceder prestamo"
-                         "   3- Comprobar prestamos   4- Devolver prestamo   5- Salir.\n")
-    valores_correctos(1, 5, eleccion)
+                     "   3- Comprobar prestamos   4- Devolver prestamo   5- Salir.\n")
+    eleccion = valores_correctos(1, 5, eleccion)
     if eleccion == 1:
-        if len(prestamos) > 3:
+        if len(prestamos) > 2:
             print("Ya tienes 3 prestamos en proceso de ser liquidados,"
                   " mejor esperamos más antes de pedir el siguiente.")
             return "muchos prestamos"
@@ -42,7 +47,7 @@ def prestamista(dinero, opciones, prestamos):
             opcion = input()
             opcion = valores_correctos(1, 4, opcion)
             if opcion == 4:
-                print("De acuerdo, hasta la proxima")
+                print("De acuerdo, hasta la proxima.\n")
                 return "muchos prestamos"
             else:
                 prestamo_pedido = opciones[opcion - 1]
@@ -58,7 +63,7 @@ def prestamista(dinero, opciones, prestamos):
         else:
             imprimir_prestamos(opciones)
             opcion = input()
-            valores_correctos(1, 4, opcion)
+            opcion = valores_correctos(1, 4, opcion)
             posibles_prestamos = opciones[opcion]
             if opcion == 4:
                 print("De acuerdo, hasta la proxima")
@@ -78,6 +83,8 @@ def prestamista(dinero, opciones, prestamos):
         comprobador_prestamos(prestamos)
     # Se devuelven los prestamos.
     elif eleccion == 4:
+        if len(prestamos) == 0:
+            print("No tienes prestamos que devolver")
         numero_prestamos = 0
         for prestamo in prestamos:
             # Solo se comprueban los solicitados, los concedidos se devuelven automaticamente.
@@ -113,6 +120,7 @@ def comprobador_prestamos(prestamos):
                   .format(numero_prestamo, i[4], i[0], i[1], i[2], i[3]))
             numero_prestamo += 1
 
+
 def liquidacion_prestamos(prestamos, dinero):
     # Aqui tenemos que tener en cuenta los prestamos, y cuando pasan los turnos:
     for prestamo in prestamos:
@@ -133,13 +141,14 @@ def liquidacion_prestamos(prestamos, dinero):
                 prestamos.remove(prestamo)
     return prestamos, dinero
 
+
 def prestamista_paso_final(dinero, prestamos):
     accion_prestamista = prestamista(dinero, generar_prestamos(), prestamos)
     if accion_prestamista == "no money" or accion_prestamista == "muchos prestamos" \
-            or accion_prestamista == None:
+            or accion_prestamista is None:
         return "continuar"
     # Este es un prestamo que devolvemos antes de tiempo.
-    elif accion_prestamista[0] == True:
+    elif accion_prestamista[0] is True:
         dinero -= accion_prestamista[1]
         print("Has devuelto un total de {} monedas. El prestamo se elimina."
               .format(accion_prestamista[1]))
@@ -157,6 +166,8 @@ def prestamista_paso_final(dinero, prestamos):
         prestamos.append(accion_prestamista)
         dinero -= accion_prestamista[0]
         return prestamos, dinero
+
+
 # -------------------------------------------ACABA PRESTAMISTA --------------------------------------------------------
 
 # -------------------------------------------ASTILLERO-----------------------------------------------------------------
@@ -177,12 +188,13 @@ def creacion_barcos(dinero):
         print("No has introducido un valor correcto.")
     return dinero, False
 
-def reparacion_barco(salud, dinero):
+
+def reparacion_barco(salud, dinero, numero_barcos):
     print("La salud de tu barco es de {}%".format(salud))
-    precio_reparacion = (100 - salud) * 500
+    precio_reparacion = ((100 - salud) * 500) * numero_barcos
     opciones = input("¿Que quieres hacer?\n"
-                         "1- Reparar ({} monedas).\n"
-                         "2- Salir.\n".format(precio_reparacion))
+                     "1- Reparar ({} monedas).\n"
+                     "2- Salir.\n".format(precio_reparacion))
     opciones = valores_correctos(1, 2, opciones)
 
     if opciones == 2:
@@ -201,7 +213,8 @@ def reparacion_barco(salud, dinero):
 
     return salud, dinero
 
-def astillero(salud, dinero, nombre):
+
+def astillero(salud, dinero, nombre, numero_barcos):
     eleccion = int(input("\nBienvenido al astillero, {}. ¿Qué deseas hacer?\n1- Reparar flota."
                          "\n2- Construir barco.\n3- Salir.".format(nombre)))
     if eleccion == 3:
@@ -210,10 +223,11 @@ def astillero(salud, dinero, nombre):
         barco_nuevo = creacion_barcos(dinero)
         return barco_nuevo
     elif eleccion == 1:
-        reparar_flota = reparacion_barco(salud, dinero)
+        reparar_flota = reparacion_barco(salud, dinero, numero_barcos)
         return reparar_flota
 
-def comprobacion_barcos(numero_barcos):
+
+def comprobacion_barcos(numero_barcos, espacio_barcos):
     if numero_barcos[1] > 0:
         numero_barcos[2] += 1
     if numero_barcos[2] == 5:
@@ -221,15 +235,18 @@ def comprobacion_barcos(numero_barcos):
         numero_barcos[2] = 0
         numero_barcos[1] -= 1
         print("Se ha añadido un nuevo barco a tu flota. ¡Enhorabuena!")
-    return numero_barcos
+        espacio_barcos += 300
+    return numero_barcos, espacio_barcos
+
 
 # -------------------------------------------ACABA ASTILLERO ----------------------------------------------------------
 # -------------------------------------------EMPIEZA CIUDAD ----------------------------------------------------------
 def opciones_ciudad(ciudad):
     print("Acabas de llegar a {}.\n".format(ciudad))
     opcion = input("¿Qué quieres hacer?\n\n1- Comerciar con la ciudad.\n2- Ir al astillero.\n3- Ir al prestamista.\n"
-                       "4- Comprobar dinero e inventario.\n5- Acabar el turno.\n")
-    opcion = valores_correctos(1, 5, opcion)
+                   "4- Comprobar dinero e inventario.\n5- Cambiar de ciudad\n6- Acabar el turno.\n"
+                   "7- Salir del juego.\n")
+    opcion = valores_correctos(1, 7, opcion)
     return opcion
 
 
@@ -242,8 +259,131 @@ def en_que_ciudad_estoy(ciudad):
         return 3
     elif ciudad == "Malmo":
         return 4
+
+
+def cambio_ciudad(ciudad):
+    ciudades = ["Lubeck", "Stettin", "Malmo", "Rostock"]
+    print("\n")
+    for i in range(len(ciudades)):
+        print("{}- {}.".format(i + 1, ciudades[i]))
+    pregunta = input("¿A qué ciudad quieres viajar?\n")
+    pregunta = valores_correctos(1, 4, pregunta)
+    if ciudades[pregunta - 1] == ciudad:
+        print("No puedes viajar a {}, ya estás en ella.".format(ciudades[pregunta - 1]))
     else:
-        ValueError("Ups, parece que algo ha ido mal en la elección de la ciudad.")
+        ciudad = ciudades[pregunta - 1]
+    return ciudad
 
 
-# -------------------------------------------ACABA CIUDAD--------------------------------------------------------------
+#------------------------------------------------ACABA CIUDAD-----------------------------------------------------------
+#-----------------------------------------------EMPIEZA COMERCIO--------------------------------------------------------
+
+def opciones_comercio(dinero, ciudad, inventario, espacio_barcos, precios):
+    opcion = input("¿Qué quieres hacer?\n1- Comprar\n2- Vender\n3- Salir")
+    opcion = valores_correctos(1, 3, opcion)
+    if opcion == 1:
+        donde_estoy = que_ciudad(dinero, ciudad, inventario, espacio_barcos, precios, "compra")
+        a_retornar = segunda_compra(donde_estoy)
+        return a_retornar
+    elif opcion == 2:
+        donde_estoy = que_ciudad(dinero, ciudad, inventario, espacio_barcos, precios, "venta")
+        a_retornar = segunda_compra(donde_estoy)
+        return a_retornar
+    elif opcion == 3:
+        print("De acuerdo, hasta la proxima")
+
+
+def que_ciudad(dinero, ciudad, inventario, espacio_barcos, precios, modo):
+    if ciudad == "Lubeck":
+        return Lubeck, dinero, inventario, espacio_barcos, precios, modo
+    elif ciudad == "Rostock":
+        return Rostock, dinero, inventario, espacio_barcos, precios, modo
+    elif ciudad == "Malmo":
+        return Malmo, dinero, inventario, espacio_barcos, precios, modo
+    elif ciudad == "Stettin":
+        return Stettin, dinero, inventario, espacio_barcos, precios, modo
+
+
+def segunda_compra(datos_compra):
+    stop = False
+    ciudad = datos_compra[0]
+    dinero = datos_compra[1]
+    inventario = datos_compra[2]
+    espacio_barcos = datos_compra[3]
+    precios = datos_compra[4]
+    modo = datos_compra[5]
+    ciudad.mostrar_precios()
+    while not stop:
+        opcion = input("¿Qué quieres comerciar?")
+        opcion = valores_correctos(1, 5, opcion)
+        if opcion == 1:
+            producto = ciudad.telas
+            posicion_inventario = 0
+            a_retornar = tercera_compra(producto, dinero, espacio_barcos, inventario,
+                                        posicion_inventario, precios, modo)
+            return a_retornar
+        elif opcion == 2:
+            producto = ciudad.cerveza
+            posicion_inventario = 1
+            a_retornar = tercera_compra(producto, dinero, espacio_barcos, inventario,
+                                        posicion_inventario, precios, modo)
+            return a_retornar
+        elif opcion == 3:
+            producto = ciudad.herramientas
+            posicion_inventario = 2
+            a_retornar = tercera_compra(producto, dinero, espacio_barcos, inventario,
+                                        posicion_inventario, precios, modo)
+            return a_retornar
+        elif opcion == 4:
+            producto = ciudad.pieles
+            posicion_inventario = 3
+            a_retornar = tercera_compra(producto, dinero, espacio_barcos, inventario,
+                                        posicion_inventario, precios, modo)
+            return a_retornar
+        elif opcion == 5:
+            producto = ciudad.vino
+            posicion_inventario = 4
+            a_retornar = tercera_compra(producto, dinero, espacio_barcos, inventario,
+                                        posicion_inventario, precios, modo)
+            return a_retornar
+
+
+def tercera_compra(producto, dinero, espacio_barcos, inventario, posicion_inventario, precios, modo):
+    # Si seleccionamos compra.
+    if modo == "compra":
+        cuantos = int(input("¿Cuantas unidades quieres comprar? Te puedes permitir {}"
+                            .format(round(dinero / producto))))
+        if dinero > cuantos * producto:
+            if espacio_barcos > cuantos:
+                if precios[posicion_inventario] == 0:
+                    precios[posicion_inventario] = producto
+                elif precios[posicion_inventario] == producto:
+                    precios[posicion_inventario] = producto
+                else:
+                    nuevo_precio_medio = round((inventario[posicion_inventario] * precios[posicion_inventario] +
+                                                cuantos * producto) / (cuantos + inventario[posicion_inventario]))
+                    precios[posicion_inventario] = nuevo_precio_medio
+                dinero -= cuantos * producto
+                inventario[posicion_inventario] += cuantos
+                espacio_barcos -= cuantos
+                print("Acabas de comprar {} unidades a {} monedas. Te quedan {} espacios libres."
+                      .format(cuantos, cuantos * producto, espacio_barcos))
+                return dinero, inventario, espacio_barcos, precios
+
+            else:
+                print("No tienes suficiente espacio en tu flota para cargar tantas mercancias.")
+        else:
+            print("No tienes suficiente dinero para comprar tantas mercancias.")
+    # Si seleccionamos venta.
+    elif modo == "venta":
+        cuantos = input("¿Cuantas unidades quieres vender? Tienes {} unidades en el inventario."
+                        .format(inventario[posicion_inventario]))
+        cuantos = valores_correctos(0, inventario[posicion_inventario], cuantos)
+        dinero += cuantos * producto
+        inventario[posicion_inventario] -= cuantos
+        espacio_barcos += cuantos
+        if inventario[posicion_inventario] == 0:
+            precios[posicion_inventario] = 0
+        print("Has vendido {} unidades por un total de {} monedas".format(cuantos, cuantos * producto))
+
+        return dinero, inventario, espacio_barcos, precios
