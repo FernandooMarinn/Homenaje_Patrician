@@ -172,7 +172,7 @@ def prestamista_paso_final(dinero, prestamos):
 
 # -------------------------------------------ASTILLERO-----------------------------------------------------------------
 def creacion_barcos(dinero):
-    print("\n¿Quieres crear un nuevo barco para tu flota?\n1- Si 25000 monedas.\n2- No, salir.")
+    print("\n¿Quieres crear un nuevo barco para tu flota?\n1- Si 25000 monedas.\n2- No, salir.\n")
     eleccion = input()
     eleccion = valores_correctos(1, 2, eleccion)
     if eleccion == 1:
@@ -208,15 +208,17 @@ def reparacion_barco(salud, dinero, numero_barcos):
                 salud += 1
                 sleep(0.5)
             print("\nTu barco está como nuevo, ya puedes salir a navegar otra vez.")
+            salud = 100
+            return salud, "reparado", dinero
         else:
             print("No te puedes permitir la reparación.")
 
-    return salud, dinero
+
 
 
 def astillero(salud, dinero, nombre, numero_barcos):
     eleccion = int(input("\nBienvenido al astillero, {}. ¿Qué deseas hacer?\n1- Reparar flota."
-                         "\n2- Construir barco.\n3- Salir.".format(nombre)))
+                         "\n2- Construir barco.\n3- Salir.\n".format(nombre)))
     if eleccion == 3:
         print("De acuerdo, hasta la proxima")
     elif eleccion == 2:
@@ -271,15 +273,22 @@ def cambio_ciudad(ciudad):
     if ciudades[pregunta - 1] == ciudad:
         print("No puedes viajar a {}, ya estás en ella.".format(ciudades[pregunta - 1]))
     else:
+        print("Viajando a {}...".format(ciudades[pregunta - 1]))
+        sleep(2)
         ciudad = ciudades[pregunta - 1]
+        cambiar_precios()
     return ciudad
 
-
+def cambiar_precios():
+    Lubeck.cambiar_precios()
+    Rostock.cambiar_precios()
+    Stettin.cambiar_precios()
+    Malmo.cambiar_precios()
 #------------------------------------------------ACABA CIUDAD-----------------------------------------------------------
 #-----------------------------------------------EMPIEZA COMERCIO--------------------------------------------------------
 
 def opciones_comercio(dinero, ciudad, inventario, espacio_barcos, precios):
-    opcion = input("¿Qué quieres hacer?\n1- Comprar\n2- Vender\n3- Salir")
+    opcion = input("¿Qué quieres hacer?\n1- Comprar\n2- Vender\n3- Salir\n")
     opcion = valores_correctos(1, 3, opcion)
     if opcion == 1:
         donde_estoy = que_ciudad(dinero, ciudad, inventario, espacio_barcos, precios, "compra")
@@ -314,7 +323,7 @@ def segunda_compra(datos_compra):
     modo = datos_compra[5]
     ciudad.mostrar_precios()
     while not stop:
-        opcion = input("¿Qué quieres comerciar?")
+        opcion = input("¿Qué quieres comerciar?\n")
         opcion = valores_correctos(1, 5, opcion)
         if opcion == 1:
             producto = ciudad.telas
@@ -351,10 +360,10 @@ def segunda_compra(datos_compra):
 def tercera_compra(producto, dinero, espacio_barcos, inventario, posicion_inventario, precios, modo):
     # Si seleccionamos compra.
     if modo == "compra":
-        cuantos = int(input("¿Cuantas unidades quieres comprar? Te puedes permitir {}"
-                            .format(round(dinero / producto))))
-        if dinero > cuantos * producto:
-            if espacio_barcos > cuantos:
+        cuantos = int(input("¿Cuantas unidades quieres comprar? Te puedes permitir {}\n"
+                            .format(round(dinero / producto - 1))))
+        if dinero >= cuantos * producto:
+            if espacio_barcos >= cuantos:
                 if precios[posicion_inventario] == 0:
                     precios[posicion_inventario] = producto
                 elif precios[posicion_inventario] == producto:
@@ -366,7 +375,7 @@ def tercera_compra(producto, dinero, espacio_barcos, inventario, posicion_invent
                 dinero -= cuantos * producto
                 inventario[posicion_inventario] += cuantos
                 espacio_barcos -= cuantos
-                print("Acabas de comprar {} unidades a {} monedas. Te quedan {} espacios libres."
+                print("Acabas de comprar {} unidades a {} monedas. Te quedan {} espacios libres.\n"
                       .format(cuantos, cuantos * producto, espacio_barcos))
                 return dinero, inventario, espacio_barcos, precios
 
@@ -376,7 +385,7 @@ def tercera_compra(producto, dinero, espacio_barcos, inventario, posicion_invent
             print("No tienes suficiente dinero para comprar tantas mercancias.")
     # Si seleccionamos venta.
     elif modo == "venta":
-        cuantos = input("¿Cuantas unidades quieres vender? Tienes {} unidades en el inventario."
+        cuantos = input("¿Cuantas unidades quieres vender? Tienes {} unidades en el inventario.\n"
                         .format(inventario[posicion_inventario]))
         cuantos = valores_correctos(0, inventario[posicion_inventario], cuantos)
         dinero += cuantos * producto

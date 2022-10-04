@@ -71,3 +71,7 @@ def guardar_partida(datos_partida):
     elif eleccion == 2:
         print("De acuerdo. ¡Hasta la proxima!")
         exit()
+
+
+def separar_opciones():
+    print("-" * 180)

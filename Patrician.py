@@ -96,6 +96,7 @@ def juego(jugador, ciudad_inicio):
             eleccion = opciones_ciudad(ciudad)
             # Si elegimos el comercio.
             if eleccion == 1:
+                separar_opciones()
                 comercio = opciones_comercio(dinero, ciudad, inventario, espacio_barcos, precios)
                 if comercio is None:
                     continue
@@ -105,13 +106,20 @@ def juego(jugador, ciudad_inicio):
                 precios = comercio[3]
             # Si elegimos el astillero.
             elif eleccion == 2:
+                separar_opciones()
                 eleccion_astillero = astillero(salud_barcos, dinero, nombre, numero_barcos[0])
                 if eleccion_astillero[1] is True:
                     dinero = eleccion_astillero[0]
                     numero_barcos[1] += 1
                     continue
+                elif eleccion_astillero[1] is False:
+                    continue
+                elif eleccion_astillero[1] == "reparado":
+                    salud_barcos = eleccion_astillero[0]
+                    dinero = eleccion_astillero[2]
             # Esto es el prestamista.
             elif eleccion == 3:
+                separar_opciones()
                 prestamos_procesados = prestamista_paso_final(dinero, prestamos)
                 if prestamos_procesados == "continuar":
                     continue
@@ -119,15 +127,21 @@ def juego(jugador, ciudad_inicio):
                     prestamos = prestamos_procesados[0]
                     dinero = prestamos_procesados[1]
             elif eleccion == 4:
+                separar_opciones()
                 comprobar_dinero(dinero, inventario, numero_barcos, turno, prestamos, espacio_barcos, precios)
                 continue
             # Aquí cambiamos de ciudad.
             elif eleccion == 5:
+                separar_opciones()
                 viaje_entre_ciudades = cambio_ciudad(ciudad)
-                ciudad = viaje_entre_ciudades
-                break
+                if ciudad == viaje_entre_ciudades:
+                    continue
+                else:
+                    ciudad = viaje_entre_ciudades
+                    break
             # Aquí se termina el turno.
             elif eleccion == 6:
+                separar_opciones()
                 print("{} ha dejado pasar un turno.\n\n".format(nombre))
                 break
             elif eleccion == 7:
@@ -137,7 +151,8 @@ def juego(jugador, ciudad_inicio):
 
 # Función principal.
 def main():
-    print("Bienvenido a este homenaje al juego Patrician III. Creado por FernandooMarinn (GitHub)")
+    print("\nBienvenido a este homenaje al juego Patrician III. Creado por FernandooMarinn (GitHub)")
+    separar_opciones()
     juego(jugador(), ciudad_inicial())
 
 
