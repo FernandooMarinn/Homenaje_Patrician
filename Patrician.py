@@ -60,8 +60,8 @@ def juego(jugador, ciudad_inicio):
         # Cada turno, aumentamos en 1 el turno.
         print("*" * 50)
         turno += 1
-        print("Se te cobra la factura de esta ronda. Se retiran {} monedas.".format(factura(dinero, numero_barcos)))
-        dinero -= factura(dinero, numero_barcos)
+        print("Se te cobra la factura de esta ronda. Se retiran {} monedas.".format(factura(dinero, numero_barcos[0])))
+        dinero -= factura(dinero, numero_barcos[0])
         print("Se avanza un turno, ahora vas por el turno {}.\n".format(turno))
         # Aqui se tienen en cuenta los prestamos
         evolucion_prestamos = liquidacion_prestamos(prestamos, dinero)

@@ -42,11 +42,16 @@ def comprobar_dinero(dinero, inventario, barcos, turno, prestamos, espacios_barc
           "Pieles: {} a {} monedas.\n"
           "Vino: {} a {} monedas.\n\n"
           "Tienes {} barco(s) en tu convoy.\n"
-          "Te quedan {} prestamos en proceso de ser liquidados\n"
-          "Todavía tienes {} espacios sin ocupar en tu flota."
           .format(dinero, turno, inventario[0], precios[0],  inventario[1], precios[1], inventario[2], precios[2],
-                  inventario[3], precios[3], inventario[4], precios[4], numero_barcos, len(prestamos), espacios_barco))
-
+                  inventario[3], precios[3], inventario[4], precios[4], numero_barcos))
+    if len(prestamos) > 0:
+        print("Tienes {} prestamos pendientes de liquidar.".format(len(prestamos)))
+    elif len(prestamos) == 0:
+        print("No tienes prestamos pendientes")
+    if espacios_barco == 0:
+        print("No te queda espacio de carga en tu flota.")
+    else:
+        print("Todavía tienes {} espacios de carga libres en tu flota.".format(espacios_barco))
 # -----------------------------------------------EMPIEZAN LOS BARCOS---------------------------------------------------
 
 
