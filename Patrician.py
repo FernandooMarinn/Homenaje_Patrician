@@ -1,6 +1,5 @@
 # Importamos los archivos de ciudad y de clases.
 from Ciudad import *
-from Clases import *
 from Funcionalidades import *
 
 
@@ -27,17 +26,6 @@ def jugador():
     return datos_jugador
 
 
-def precio_aleatorio(precio):
-    precio = random.randint(precio[0], precio[1])
-    return precio
-
-
-# Se prepara la factura del 5% cada ronda.
-def factura(dinero):
-    print("Se cobra la factura del turno, con un total de {} monedas.".format(round(dinero * 0.05)))
-    return round(dinero * 0.05)
-
-
 # Elegimos la ciudad de inicio.
 def ciudad_inicial():
     ciudades = ["Lubeck", "Stettin", "Malmo", "Rostock"]
@@ -57,7 +45,7 @@ def juego(jugador, ciudad_inicio):
     stop = False
     en_viaje = [False, 0]
     turno = 0
-    salud_barcos = 90
+    salud_barcos = 101
     numero_barcos = [1, 0, 0]
     espacio_barcos = 300
     prestamos = []
@@ -72,7 +60,8 @@ def juego(jugador, ciudad_inicio):
         # Cada turno, aumentamos en 1 el turno.
         print("*" * 50)
         turno += 1
-        dinero -= factura(dinero)
+        print("Se te cobra la factura de esta ronda. Se retiran {} monedas.".format(factura(dinero, numero_barcos)))
+        dinero -= factura(dinero, numero_barcos)
         print("Se avanza un turno, ahora vas por el turno {}.\n".format(turno))
         # Aqui se tienen en cuenta los prestamos
         evolucion_prestamos = liquidacion_prestamos(prestamos, dinero)
@@ -108,15 +97,18 @@ def juego(jugador, ciudad_inicio):
             elif eleccion == 2:
                 separar_opciones()
                 eleccion_astillero = astillero(salud_barcos, dinero, nombre, numero_barcos[0])
-                if eleccion_astillero[1] is True:
+                if eleccion_astillero is False:
+                    continue
+                elif eleccion_astillero[1] == "reparado":
+                    salud_barcos = eleccion_astillero[0]
+                    dinero = eleccion_astillero[2]
+                elif eleccion_astillero[1] is True:
                     dinero = eleccion_astillero[0]
                     numero_barcos[1] += 1
                     continue
                 elif eleccion_astillero[1] is False:
                     continue
-                elif eleccion_astillero[1] == "reparado":
-                    salud_barcos = eleccion_astillero[0]
-                    dinero = eleccion_astillero[2]
+
             # Esto es el prestamista.
             elif eleccion == 3:
                 separar_opciones()
@@ -133,9 +125,25 @@ def juego(jugador, ciudad_inicio):
             # Aquí cambiamos de ciudad.
             elif eleccion == 5:
                 separar_opciones()
-                viaje_entre_ciudades = cambio_ciudad(ciudad)
+                viaje_entre_ciudades = cambio_ciudad(ciudad, salud_barcos, numero_barcos, dinero)
+                # Aquí se simulan los ataques piratas.
                 if ciudad == viaje_entre_ciudades:
                     continue
+                # Si se gana el ataque.
+                elif viaje_entre_ciudades[0] is True:
+                    ciudad = viaje_entre_ciudades[1]
+                    dinero = viaje_entre_ciudades[2]
+                    salud_barcos = viaje_entre_ciudades[3]
+                    break
+                # Si se pierde el ataque.
+                elif viaje_entre_ciudades[0] is False:
+                    ciudad = viaje_entre_ciudades[1]
+                    inventario = viaje_entre_ciudades[2]
+                    precios = viaje_entre_ciudades[3]
+                    numero_barcos[0] = 0
+                    salud_barcos = 100
+                    espacio_barcos = 0
+                    break
                 else:
                     ciudad = viaje_entre_ciudades
                     break

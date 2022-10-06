@@ -1,4 +1,6 @@
-from Funcionalidades import valores_correctos
+import random
+
+from Funcionalidades import *
 from time import sleep
 from Clases import *
 
@@ -221,6 +223,7 @@ def astillero(salud, dinero, nombre, numero_barcos):
                          "\n2- Construir barco.\n3- Salir.\n".format(nombre)))
     if eleccion == 3:
         print("De acuerdo, hasta la proxima")
+        return False
     elif eleccion == 2:
         barco_nuevo = creacion_barcos(dinero)
         return barco_nuevo
@@ -261,29 +264,62 @@ def en_que_ciudad_estoy(ciudad):
         return 3
     elif ciudad == "Malmo":
         return 4
+    elif ciudad == "Gdanks":
+        return 5
 
-
-def cambio_ciudad(ciudad):
-    ciudades = ["Lubeck", "Stettin", "Malmo", "Rostock"]
+def cambio_ciudad(ciudad, salud_barcos, numero_barcos, dinero):
+    ciudades = ["Lubeck", "Stettin", "Malmo", "Rostock", "Gdanks"]
     print("\n")
     for i in range(len(ciudades)):
         print("{}- {}.".format(i + 1, ciudades[i]))
     pregunta = input("¿A qué ciudad quieres viajar?\n")
-    pregunta = valores_correctos(1, 4, pregunta)
+    pregunta = valores_correctos(1, 5, pregunta)
     if ciudades[pregunta - 1] == ciudad:
         print("No puedes viajar a {}, ya estás en ella.".format(ciudades[pregunta - 1]))
     else:
-        print("Viajando a {}...".format(ciudades[pregunta - 1]))
-        sleep(2)
         ciudad = ciudades[pregunta - 1]
+        print("Viajando a {}...".format(ciudades[pregunta - 1]))
         cambiar_precios()
-    return ciudad
+        espera_viaje(salud_barcos)
+        posible_ataque = ataque_pirata(salud_barcos, numero_barcos, dinero)
+        if posible_ataque == "huir":
+            print("Aprovechando el viento escapas de la batalla.")
+            return ciudad
+        elif posible_ataque == "no ataque":
+            return ciudad
+        elif posible_ataque[0] is True:
+            dinero = posible_ataque[1]
+            salud_barcos = posible_ataque[2]
+            return True, ciudad, dinero, salud_barcos
+        elif posible_ataque[0] is False:
+            return False, ciudad, posible_ataque[1], posible_ataque[2], posible_ataque[3]
+
+
+
+def espera_viaje(salud_barcos):
+    if salud_barcos > 90:
+        sleep(1)
+    elif salud_barcos > 70:
+        sleep(1.5)
+    elif salud_barcos > 50:
+        print("Tu flota empieza a deteriorarse, el viaje tarda un poco más.")
+        sleep(2.5)
+    elif salud_barcos > 30:
+        print("Con las velas en estas condiciones es dificil avanzar. El viaje tardará bastante.")
+        sleep(4.5)
+    elif salud_barcos > 10:
+        print("De milagro tus barcos siguen flotando, es hora de visitar el astillero para repararlos.")
+        sleep(6.5)
+    else:
+        print("Tus marineros están rezando por sus vidas y no pueden trabajar. Acomodate, el viaje será largo.")
+        sleep(10)
 
 def cambiar_precios():
     Lubeck.cambiar_precios()
     Rostock.cambiar_precios()
     Stettin.cambiar_precios()
     Malmo.cambiar_precios()
+    Gdanks.cambiar_precios()
 #------------------------------------------------ACABA CIUDAD-----------------------------------------------------------
 #-----------------------------------------------EMPIEZA COMERCIO--------------------------------------------------------
 
@@ -311,6 +347,8 @@ def que_ciudad(dinero, ciudad, inventario, espacio_barcos, precios, modo):
         return Malmo, dinero, inventario, espacio_barcos, precios, modo
     elif ciudad == "Stettin":
         return Stettin, dinero, inventario, espacio_barcos, precios, modo
+    elif ciudad == "Gdanks":
+        return Gdanks, dinero, inventario, espacio_barcos, precios, modo
 
 
 def segunda_compra(datos_compra):

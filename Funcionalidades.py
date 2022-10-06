@@ -1,4 +1,9 @@
+import random
+from time import sleep
+from Clases import *
 # Pequeña función que comprueba si el valor introducido es correcto, eliminando los bucles en las otras funciones.
+
+
 def valores_correctos_numero(inicio, final, numero_a_comprobar):
     try:
         if inicio <= int(numero_a_comprobar) <= final:
@@ -55,11 +60,64 @@ def deterioro_barcos(salud_barcos, nombre):
         return salud_barcos
 
 
-def en_viaje(en_viaje, turnos):
-    en_viaje[1] += turnos
-    if en_viaje[1] > 1:
-        en_viaje[0] = True
-    return en_viaje
+def ataque_pirata(salud_barcos, numero_barcos, dinero):
+    probabilidad_de_ataque = random.randint(1, 10)
+    if probabilidad_de_ataque == 5:
+        numero_barcos_pirata = random.randint(1, numero_barcos[0] + 2)
+        salud_barcos_pirata = random.randint(40, 100)
+        print("¡Te están atacando {} barcos piratas! La salud de tu(s) {} barcos es de {}%.\n¿Qué quieres hacer?\n"
+              "1- Enfrentarte a ellos.\n2- Huir."
+              .format(numero_barcos_pirata, numero_barcos[0], salud_barcos))
+        eleccion = input()
+        eleccion = valores_correctos(1, 2, eleccion)
+        if eleccion == 1:
+            resultado_combate = combate(salud_barcos, numero_barcos, numero_barcos_pirata, salud_barcos_pirata)
+            if resultado_combate is False:
+                inventario = [0, 0, 0, 0, 0]
+                precios = [0, 0, 0, 0, 0]
+                numero_barcos = 0
+                return False, inventario, precios, numero_barcos
+            elif resultado_combate[0] is True:
+                botin_consegido = botin_pirata(numero_barcos_pirata, dinero)
+                dinero = botin_consegido
+                salud_barcos = resultado_combate[1]
+                return True, dinero, salud_barcos
+        elif eleccion == 2:
+            return "huir"
+    else:
+        return "no ataque"
+
+
+def combate(salud_barcos, numero_barcos, numero_barcos_pirata, salud_barcos_pirata):
+    while salud_barcos > 0 and salud_barcos_pirata > 0:
+        if salud_barcos % 5 == 0:
+            print("La salud de tu(s) barcos va por {}%.".format(salud_barcos))
+            separar_opciones()
+        if salud_barcos_pirata % 5 == 0:
+            print("La salud de tu enemigo va por {}%.".format(salud_barcos_pirata))
+            separar_opciones()
+        salud_barcos -= numero_barcos_pirata
+        salud_barcos_pirata -= numero_barcos[0]
+        sleep(0.1)
+    if salud_barcos < 1:
+        print("Tu audacia no te ha salvado de perder tus barcos. Esperemos que tengas monedas para fabricar un barco.")
+        return False
+    elif salud_barcos_pirata < 1:
+        print("Contra viento y marea, has conseguido superar al pirata. ¡Enhorabuena!")
+        return True, salud_barcos
+
+def botin_pirata(numero_barcos_pirata, dinero):
+    botin = random.randint(20000, 50000)
+    dinero += botin * numero_barcos_pirata
+    print("El capitán enemigo guardaba {} monedas en cada barco. Al hacerte con el botín, tu fortuna aumenta a {}"
+          " monedas."
+          .format(botin, dinero))
+    return dinero
+
+# -----------------------------------------------ACABAN LOS BARCOS----------------------------------------------
+
+def factura(dinero, numero_barcos):
+    return round(dinero * 0.02) + 1500 * numero_barcos
 
 
 def guardar_partida(datos_partida):

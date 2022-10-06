@@ -57,3 +57,5 @@ Stettin = Ciudad(1400, 1000, 450, 250, 42, 32, 400, 280, 420, 300, "Stettin")
 Malmo = Ciudad(1100, 700, 450, 250, 70, 45, 400, 280, 300, 200, "Malmo")
 # Rostock compra de todo.
 Rostock = Ciudad(1400, 1000, 450, 250, 70, 45, 400, 280, 420, 300, "Rostock")
+# Gdanks compra telas, vino, y herramientas. Vende cerveza.
+Gdanks = Ciudad(1400, 1000, 450, 250, 43, 32, 400, 280, 420, 300, "Gdanks")
