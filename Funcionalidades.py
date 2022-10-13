@@ -111,6 +111,7 @@ def combate(salud_barcos, numero_barcos, numero_barcos_pirata, salud_barcos_pira
         print("Contra viento y marea, has conseguido superar al pirata. ¡Enhorabuena!")
         return True, salud_barcos
 
+
 def botin_pirata(numero_barcos_pirata, dinero):
     botin = random.randint(20000, 50000)
     dinero += botin * numero_barcos_pirata

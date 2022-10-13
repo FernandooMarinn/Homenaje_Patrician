@@ -401,6 +401,7 @@ def tercera_compra(producto, dinero, espacio_barcos, inventario, posicion_invent
     if modo == "compra":
         cuantos = int(input("¿Cuantas unidades quieres comprar? Te puedes permitir {}\n"
                             .format(round(dinero / producto - 1))))
+        cuantos = valores_correctos(0, round(dinero / producto - 1), cuantos)
         if dinero >= cuantos * producto:
             if espacio_barcos >= cuantos:
                 if precios[posicion_inventario] == 0:
