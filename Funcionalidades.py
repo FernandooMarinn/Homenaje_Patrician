@@ -131,7 +131,7 @@ def guardar_partida(datos_partida):
     eleccion = input()
     eleccion = valores_correctos(1, 2, eleccion)
     if eleccion == 1:
-        None
+        print("Esta funcionalidad no está lista de momento.")
     elif eleccion == 2:
         print("De acuerdo. ¡Hasta la proxima!")
         exit()

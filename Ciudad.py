@@ -214,6 +214,7 @@ def reparacion_barco(salud, dinero, numero_barcos):
             return salud, "reparado", dinero
         else:
             print("No te puedes permitir la reparación.")
+            return salud, "reparado", dinero
 
 
 
@@ -399,30 +400,36 @@ def segunda_compra(datos_compra):
 def tercera_compra(producto, dinero, espacio_barcos, inventario, posicion_inventario, precios, modo):
     # Si seleccionamos compra.
     if modo == "compra":
-        cuantos = int(input("¿Cuantas unidades quieres comprar? Te puedes permitir {}\n"
-                            .format(round(dinero / producto - 1))))
-        cuantos = valores_correctos(0, round(dinero / producto - 1), cuantos)
-        if dinero >= cuantos * producto:
-            if espacio_barcos >= cuantos:
-                if precios[posicion_inventario] == 0:
-                    precios[posicion_inventario] = producto
-                elif precios[posicion_inventario] == producto:
-                    precios[posicion_inventario] = producto
-                else:
-                    nuevo_precio_medio = round((inventario[posicion_inventario] * precios[posicion_inventario] +
-                                                cuantos * producto) / (cuantos + inventario[posicion_inventario]))
-                    precios[posicion_inventario] = nuevo_precio_medio
-                dinero -= cuantos * producto
-                inventario[posicion_inventario] += cuantos
-                espacio_barcos -= cuantos
-                print("Acabas de comprar {} unidades a {} monedas. Te quedan {} espacios libres.\n"
-                      .format(cuantos, cuantos * producto, espacio_barcos))
-                return dinero, inventario, espacio_barcos, precios
+        if round(dinero / producto - 1) > 1:
+            cuantos = int(input("¿Cuantas unidades quieres comprar? Te puedes permitir {}\n"
+                                .format(round(dinero / producto - 1))))
+            cuantos = valores_correctos(0, round(dinero / producto - 1), cuantos)
+            if dinero >= cuantos * producto:
+                if espacio_barcos >= cuantos:
+                    if precios[posicion_inventario] == 0:
+                        precios[posicion_inventario] = producto
+                    elif precios[posicion_inventario] == producto:
+                        precios[posicion_inventario] = producto
+                    else:
+                        if cuantos == 0:
+                            pass
+                        else:
+                            nuevo_precio_medio = round((inventario[posicion_inventario] * precios[posicion_inventario] +
+                                                        cuantos * producto) / (cuantos + inventario[posicion_inventario]))
+                            precios[posicion_inventario] = nuevo_precio_medio
+                    dinero -= cuantos * producto
+                    inventario[posicion_inventario] += cuantos
+                    espacio_barcos -= cuantos
+                    print("Acabas de comprar {} unidades a {} monedas. Te quedan {} espacios libres.\n"
+                          .format(cuantos, cuantos * producto, espacio_barcos))
+                    return dinero, inventario, espacio_barcos, precios
 
+                else:
+                    print("No tienes suficiente espacio en tu flota para cargar tantas mercancias.")
             else:
-                print("No tienes suficiente espacio en tu flota para cargar tantas mercancias.")
+                print("No tienes suficiente dinero para comprar tantas mercancias.")
         else:
-            print("No tienes suficiente dinero para comprar tantas mercancias.")
+            print("De momento no te puedes permitir comprar este producto, intenta vender algo primero.")
     # Si seleccionamos venta.
     elif modo == "venta":
         cuantos = input("¿Cuantas unidades quieres vender? Tienes {} unidades en el inventario.\n"
